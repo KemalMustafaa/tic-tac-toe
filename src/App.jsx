@@ -2,10 +2,20 @@ import { useState } from "react";
 
 //membuat component
 function Squere() {
-  return <button className="squere">X</button>;
+  const [value, setValue] = useState("");
+
+  function handleClick() {
+    setValue("X");
+  }
+
+  return (
+    <button className="squere" onClick={handleClick}>
+      {value}
+    </button>
+  );
 }
 
-export default function App() {
+export default function Board() {
   return (
     <div className="board">
       <Squere />
