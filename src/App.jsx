@@ -9,10 +9,7 @@ function Squere({ value, onSquereClick }) {
   );
 }
 
-export default function Board() {
-  const [squeres, setSqueres] = useState(Array(9).fill(null));
-  const [xIsNext, setXIsNext] = useState(true);
-
+function Board({ xIsNext, squeres, onPlay }) {
   function handleClick(i) {
     if (squeres[i] || calculateWinner(squeres)) {
       return;
@@ -20,8 +17,8 @@ export default function Board() {
 
     const nextSqueres = squeres.slice();
     nextSqueres[i] = xIsNext ? "X" : "O";
-    setSqueres(nextSqueres);
-    setXIsNext(!xIsNext);
+
+    onPlay(nextSqueres);
   }
 
   const winner = calculateWinner(squeres);
@@ -47,6 +44,49 @@ export default function Board() {
         <Squere value={squeres[8]} onSquereClick={() => handleClick(8)} />
       </div>
     </>
+  );
+}
+
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
+  const currentSqueres = history[currentMove];
+
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+  }
+
+  function handlePlay(nextSqueres) {
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSqueres];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  const moves = history.map((squeres, move) => {
+    let description = "";
+    if (move > 0) {
+      description = "Go to move #" + move;
+    } else {
+      description = "Go to game start";
+    }
+
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squeres={currentSqueres} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{moves}</ol>
+      </div>
+    </div>
   );
 }
 
