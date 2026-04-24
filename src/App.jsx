@@ -11,9 +11,7 @@ function Squere({ value, onSquereClick }) {
 
 function Board({ xIsNext, squeres, onPlay }) {
   function handleClick(i) {
-    if (squeres[i] || calculateWinner(squeres)) {
-      return;
-    }
+    if (squeres[i] || calculateWinner(squeres)) return;
 
     const nextSqueres = squeres.slice();
     nextSqueres[i] = xIsNext ? "X" : "O";
